@@ -3,29 +3,26 @@ const socketIO = require('socket.io');
 
 const PORT = process.env.PORT || 8080;
 
-const Card = require('./card');
-const bagr = new Card();
-console.log(bagr.bagr);
-
 const app = express();
-
 app.use(express.static('www/'));
-
 let server = app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+const Room = require('./room');
+let rooms = [
+    new Room('room1', 'Mistnost jedna'),
+    new Room('room2', 'Mistnost dva'),
+    new Room('room3', 'Mistnost tri'),
+    new Room('room4', 'Mistnost ctyri')
+];
 
 const io = socketIO(server);
 
 io.on('connection', (socket) => {
     console.log('We got a new boi');
 
-    let interval = setInterval(() => {
-        let n = Math.floor(Math.random() * 1000);
-        console.log(`sendin ${n}`);
-        socket.emit('data', n);
-    }, 1000);
+    socket.emit('roomlist', rooms);
 
     socket.on('disconnect', () => {
-        clearInterval(interval);
         console.log('Bye bye');
     });
     
