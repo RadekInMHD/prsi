@@ -11,7 +11,7 @@ class Room {
         this.players.push(player);
     }
 
-    boiLeft() {
+    boiLeft(player) {
         this.numberOfBois--;
         this.players.pop(player);
     }

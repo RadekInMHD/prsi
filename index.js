@@ -24,18 +24,28 @@ io.on('connection', (socket) => {
 
     socket.emit('roomlist', rooms);
 
+    let room;
+
     socket.on('joinreq', data => {
-        console.log('joinrew', data);
+        console.log('joinreq', data);
         socket.join(data, () => {
-            rooms[data].newBoi(socket.id);
+            room = rooms[data];
+            room.newBoi(socket.id);
+
             io.emit('roomlist', rooms);
             socket.emit('joinres', data);
-            io.to(data).emit('room-status', rooms[data].players);
+            io.to(data).emit('room-status', room.players);
         });
     });
 
     socket.on('disconnect', () => {
         console.log('Bye bye');
+
+        if (room) {
+            room.boiLeft(socket.id);
+            io.to(room.id).emit('room-status', room.players);
+            room = null;
+        }
     });
     
 });
