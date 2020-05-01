@@ -9,10 +9,10 @@ let server = app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 const Room = require('./room');
 let rooms = [
-    new Room('room1', 'Mistnost jedna'),
-    new Room('room2', 'Mistnost dva'),
-    new Room('room3', 'Mistnost tri'),
-    new Room('room4', 'Mistnost ctyri')
+    new Room(0, 'Mistnost jedna'),
+    new Room(1, 'Mistnost dva'),
+    new Room(2, 'Mistnost tri'),
+    new Room(3, 'Mistnost ctyri')
 ];
 
 const io = socketIO(server);
@@ -25,11 +25,13 @@ io.on('connection', (socket) => {
     socket.emit('roomlist', rooms);
 
     socket.on('joinreq', data => {
-        console.log(data);
+        console.log('joinrew', data);
         socket.join(data, () => {
-            rooms.find(room => room.id == data).newBoi();
+            rooms[data].newBoi(socket.id);
             io.emit('roomlist', rooms);
-        })
+            socket.emit('joinres', data);
+            io.to(data).emit('room-status', rooms[data].players);
+        });
     });
 
     socket.on('disconnect', () => {

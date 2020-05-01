@@ -1,9 +1,8 @@
 let socket;
-let font;
-let theTextIWantToWrite;
+let playing = false;
 
 function preload() {
-    font = loadFont('OpenSans-Light.ttf');
+    // font = loadFont('OpenSans-Light.ttf');
 }
 
 function setup() {
@@ -12,7 +11,10 @@ function setup() {
     let roomButts = [];
 
     socket.on('roomlist', data => {
-        console.log(data);
+        console.log('roomlist', data);
+
+        if (playing)
+            return;
 
         for (let butt of roomButts)
             butt.remove();
@@ -23,6 +25,29 @@ function setup() {
                 socket.emit('joinreq', room.id);
             }));
     });
+
+    
+    socket.on('joinres', data => {
+        console.log('joinres', data);
+        playing = true;
+        
+        for (let butt of roomButts)
+            butt.remove();  // .remove() removes the button only from th DOM, not from the roomButts (?)
+        
+        let playerPs = [];
+
+        socket.on('room-status', data => {
+            console.log('room-status', data);
+
+            for (let p of playerPs)
+                p.remove();  // .remove() removes the button only from th DOM, not from the playerPs (?)
+
+            for (let p of data)
+                playerPs.push(createP(p));
+        });
+    });
+
+    noCanvas();
 
     // createCanvas(windowWidth, windowHeight);
 

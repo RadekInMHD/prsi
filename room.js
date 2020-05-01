@@ -3,14 +3,17 @@ class Room {
         this.numberOfBois = 0;
         this.id = id;
         this.name = name;
+        this.players = [];
     }
 
-    newBoi() {
+    newBoi(player) {
         this.numberOfBois++;
+        this.players.push(player);
     }
 
     boiLeft() {
         this.numberOfBois--;
+        this.players.pop(player);
     }
 }
 
