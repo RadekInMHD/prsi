@@ -9,11 +9,19 @@ function preload() {
 function setup() {
     socket = io();  // io.connect(window.location.origin);
 
+    let roomButts = [];
+
     socket.on('roomlist', data => {
         console.log(data);
 
+        for (let butt of roomButts)
+            butt.remove();
+
         for (let room of data)
-            createButton(room.name).mouseClicked(() => console.log(`joining room ${room.id} ${room.name}`));
+            roomButts.push(createButton(`${room.name} (${room.numberOfBois})`).mouseClicked(() => {
+                console.log(`joining room ${room.id} ${room.name}`);
+                socket.emit('joinreq', room.id);
+            }));
     });
 
     // createCanvas(windowWidth, windowHeight);

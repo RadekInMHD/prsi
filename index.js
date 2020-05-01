@@ -17,10 +17,20 @@ let rooms = [
 
 const io = socketIO(server);
 
+setInterval(() => console.log(rooms), 1000);
+
 io.on('connection', (socket) => {
     console.log('We got a new boi');
 
     socket.emit('roomlist', rooms);
+
+    socket.on('joinreq', data => {
+        console.log(data);
+        socket.join(data, () => {
+            rooms.find(room => room.id == data).newBoi();
+            io.emit('roomlist', rooms);
+        })
+    });
 
     socket.on('disconnect', () => {
         console.log('Bye bye');
