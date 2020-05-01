@@ -13,7 +13,8 @@ class Room {
 
     boiLeft(player) {
         this.numberOfBois--;
-        this.players.pop(player);
+
+        this.players.splice(this.players.indexOf(player), 1);
     }
 }
 

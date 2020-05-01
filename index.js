@@ -44,6 +44,7 @@ io.on('connection', (socket) => {
         if (room) {
             room.boiLeft(socket.id);
             io.to(room.id).emit('room-status', room.players);
+            io.emit('roomlist', rooms);
             room = null;
         }
     });
