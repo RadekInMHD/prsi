@@ -7,14 +7,14 @@ function preload() {
 }
 
 function setup() {
-    socket = io.connect('http://localhost:8080');
+    socket = io();  // io.connect(window.location.origin);
 
     socket.on('data', data => {
         console.log(data);
         theTextIWantToWrite = data;
     });
 
-    createCanvas(800, 400);
+    createCanvas(windowWidth, windowHeight);
 
     textFont(font);
     textSize(80);
@@ -24,4 +24,8 @@ function setup() {
 function draw() {
     background(100);
     text(theTextIWantToWrite, width / 2, height / 2);
+}
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
 }
