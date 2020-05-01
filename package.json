@@ -1,0 +1,25 @@
+{
+  "name": "prsi",
+  "version": "1.0.0",
+  "description": "The best game of Prší you'll ever have!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/radeksoft/prsi.git"
+  },
+  "keywords": [
+    "prsi"
+  ],
+  "author": "Radeksoft",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/radeksoft/prsi/issues"
+  },
+  "homepage": "https://github.com/radeksoft/prsi#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
