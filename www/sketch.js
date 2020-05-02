@@ -42,8 +42,8 @@ function setup() {
             for (let p of playerPs)
                 p.remove();  // .remove() removes the p only from th DOM, not from the playerPs (?)
 
-            for (let p of status)
-                playerPs.push(createP(p));
+            for (let p in status)
+                playerPs.push(createP(p + ' ' + status[p].name));
         });
     });
 

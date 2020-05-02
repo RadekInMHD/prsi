@@ -1,5 +1,6 @@
 const express = require('express');
 const socketIO = require('socket.io');
+const Player = require('./player');
 
 const PORT = process.env.PORT || 8080;
 
@@ -24,17 +25,24 @@ io.on('connection', (socket) => {
 
     socket.emit('roomlist', rooms);
 
-    let room;
+    let room, player;
 
     socket.on('joinreq', roomid => {
         console.log('joinreq', roomid);
         socket.join(roomid, () => {
             room = rooms[roomid];
-            room.newBoi(socket.id);
+            console.log('room', room);
+            player = new Player(socket.id, 'naame');
+            console.log('player', player);
+            room.newBoi(player);
+            console.log('player added');
 
-            io.emit('roomlist', rooms);
+            io.emit('roomlist', rooms);  // TODO: send only to lobby
+            console.log('roomlist emitted');
             socket.emit('joinres', roomid);
+            console.log('joinres emitted');
             io.to(roomid).emit('room-status', room.players);
+            console.log('room-status emitted');
         });
     });
 
@@ -42,7 +50,7 @@ io.on('connection', (socket) => {
         console.log('Bye bye');
 
         if (room) {
-            room.boiLeft(socket.id);
+            room.boiLeft(player);
             io.to(room.id).emit('room-status', room.players);
             io.emit('roomlist', rooms);
             room = null;

@@ -3,18 +3,20 @@ class Room {
         this.numberOfBois = 0;
         this.id = id;
         this.name = name;
-        this.players = [];
+        this.players = {};
     }
 
     newBoi(player) {
         this.numberOfBois++;
-        this.players.push(player);
+        this.players[player.id] = player;
     }
 
     boiLeft(player) {
         this.numberOfBois--;
 
-        this.players.splice(this.players.indexOf(player), 1);  // TODO: create Array.prototype.remove
+        delete this.players[player.id];
+
+        // this.players.splice(this.players.indexOf(player), 1);  // TODO: create Array.prototype.remove
     }
 }
 
