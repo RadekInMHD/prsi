@@ -10,8 +10,8 @@ function setup() {
 
     let roomButts = [];
 
-    socket.on('roomlist', data => {
-        console.log('roomlist', data);
+    socket.on('roomlist', rooms => {
+        console.log('roomlist', rooms);
 
         if (playing)
             return;
@@ -19,7 +19,7 @@ function setup() {
         for (let butt of roomButts)
             butt.remove();
 
-        for (let room of data)
+        for (let room of rooms)
             roomButts.push(createButton(`${room.name} (${room.numberOfBois})`).mouseClicked(() => {
                 console.log(`joining room ${room.id} ${room.name}`);
                 socket.emit('joinreq', room.id);
@@ -27,8 +27,8 @@ function setup() {
     });
 
     
-    socket.on('joinres', data => {
-        console.log('joinres', data);
+    socket.on('joinres', roomid => {
+        console.log('joinres', roomid);
         playing = true;
         
         for (let butt of roomButts)
@@ -36,13 +36,13 @@ function setup() {
         
         let playerPs = [];
 
-        socket.on('room-status', data => {
-            console.log('room-status', data);
+        socket.on('room-status', status => {
+            console.log('room-status', status);
 
             for (let p of playerPs)
-                p.remove();  // .remove() removes the button only from th DOM, not from the playerPs (?)
+                p.remove();  // .remove() removes the p only from th DOM, not from the playerPs (?)
 
-            for (let p of data)
+            for (let p of status)
                 playerPs.push(createP(p));
         });
     });

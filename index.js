@@ -26,15 +26,15 @@ io.on('connection', (socket) => {
 
     let room;
 
-    socket.on('joinreq', data => {
-        console.log('joinreq', data);
-        socket.join(data, () => {
-            room = rooms[data];
+    socket.on('joinreq', roomid => {
+        console.log('joinreq', roomid);
+        socket.join(roomid, () => {
+            room = rooms[roomid];
             room.newBoi(socket.id);
 
             io.emit('roomlist', rooms);
-            socket.emit('joinres', data);
-            io.to(data).emit('room-status', room.players);
+            socket.emit('joinres', roomid);
+            io.to(roomid).emit('room-status', room.players);
         });
     });
 

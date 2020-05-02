@@ -14,7 +14,7 @@ class Room {
     boiLeft(player) {
         this.numberOfBois--;
 
-        this.players.splice(this.players.indexOf(player), 1);
+        this.players.splice(this.players.indexOf(player), 1);  // TODO: create Array.prototype.remove
     }
 }
 
