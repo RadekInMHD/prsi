@@ -31,7 +31,7 @@ io.on('connection', (socket) => {
         console.log('joinreq', req);
         socket.join(req.roomid, () => {
             room = rooms[req.roomid];
-            player = new Player(socket.id, req.name);
+            player = new Player(socket.id, req.name.substring(0, 16));
             room.newBoi(player);
 
             io.emit('roomlist', rooms.filter(i => !i.playing));  // TODO: send only to lobby
