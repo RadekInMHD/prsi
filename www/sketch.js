@@ -29,14 +29,17 @@ function setup() {
     });
 
     
-    socket.on('joinres', roomid => {  // roomid = number
-        console.log('joinres', roomid);
+    socket.on('joinres', admin => {  // admin = bool
+        console.log('joinres', admin);
         playing = true;
         
         for (let butt of roomButts)
             butt.remove();  // .remove() removes the button only from th DOM, not from the roomButts (?)
         
         namebox.remove();
+
+        if (admin)
+            createButton('Start Game!').mouseClicked(() => socket.emit('start-game', 'lol'));
         
         let playerPs = [];
 
@@ -47,7 +50,11 @@ function setup() {
                 p.remove();  // .remove() removes the p only from th DOM, not from the playerPs (?)
 
             for (let p in status)
-                playerPs.push(createP(`${status[p].name} (${status[p].id})`));
+                playerPs.push(createP(`${status[p].name} (${status[p].id}) ${status[p].admin}`));
+        });
+
+        socket.on('game-started', () => {
+            console.log('game started!');
         });
     });
 

@@ -4,9 +4,15 @@ class Room {
         this.id = id;
         this.name = name;
         this.players = {};
+        this.playing = false;
     }
 
     newBoi(player) {
+        if (this.numberOfBois == 0) {
+            this.admin = player;
+            this.admin.makeAdmin();
+        }
+
         this.numberOfBois++;
         this.players[player.id] = player;
     }
@@ -17,6 +23,11 @@ class Room {
         delete this.players[player.id];
 
         // this.players.splice(this.players.indexOf(player), 1);  // TODO: create Array.prototype.remove
+    }
+
+    start() {
+        console.log(`${this.admin.name} started game ${this.name}!`);
+        this.playing = true;
     }
 }
 

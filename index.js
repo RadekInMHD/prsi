@@ -23,7 +23,7 @@ setInterval(() => console.log(rooms), 1000);
 io.on('connection', (socket) => {
     console.log('We got a new boi');
 
-    socket.emit('roomlist', rooms);
+    socket.emit('roomlist', rooms.filter(i => !i.playing));
 
     let room, player;
 
@@ -31,18 +31,19 @@ io.on('connection', (socket) => {
         console.log('joinreq', req);
         socket.join(req.roomid, () => {
             room = rooms[req.roomid];
-            console.log('room', room);
             player = new Player(socket.id, req.name);
-            console.log('player', player);
             room.newBoi(player);
-            console.log('player added');
 
-            io.emit('roomlist', rooms);  // TODO: send only to lobby
-            console.log('roomlist emitted');
-            socket.emit('joinres', req.roomid);
-            console.log('joinres emitted');
+            io.emit('roomlist', rooms.filter(i => !i.playing));  // TODO: send only to lobby
+            socket.emit('joinres', player.admin);
             io.to(req.roomid).emit('room-status', room.players);
-            console.log('room-status emitted');
+
+            if (player.admin)
+                socket.on('start-game', nothing => {
+                    room.start();
+                    io.emit('roomlist', rooms.filter(i => !i.playing));
+                    io.to(req.roomid).emit('game-started', 'xd');
+                });
         });
     });
 
