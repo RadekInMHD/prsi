@@ -27,21 +27,21 @@ io.on('connection', (socket) => {
 
     let room, player;
 
-    socket.on('joinreq', roomid => {
-        console.log('joinreq', roomid);
-        socket.join(roomid, () => {
-            room = rooms[roomid];
+    socket.on('joinreq', req => {  // req = { roomid: 'foo', name: 'users name' }
+        console.log('joinreq', req);
+        socket.join(req.roomid, () => {
+            room = rooms[req.roomid];
             console.log('room', room);
-            player = new Player(socket.id, 'naame');
+            player = new Player(socket.id, req.name);
             console.log('player', player);
             room.newBoi(player);
             console.log('player added');
 
             io.emit('roomlist', rooms);  // TODO: send only to lobby
             console.log('roomlist emitted');
-            socket.emit('joinres', roomid);
+            socket.emit('joinres', req.roomid);
             console.log('joinres emitted');
-            io.to(roomid).emit('room-status', room.players);
+            io.to(req.roomid).emit('room-status', room.players);
             console.log('room-status emitted');
         });
     });

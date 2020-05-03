@@ -8,9 +8,11 @@ function preload() {
 function setup() {
     socket = io();  // io.connect(window.location.origin);
 
+    let namebox = createInput();
+
     let roomButts = [];
 
-    socket.on('roomlist', rooms => {
+    socket.on('roomlist', rooms => {  // rooms = [ Room { id, numberOfBois, name}, ... ]
         console.log('roomlist', rooms);
 
         if (playing)
@@ -22,28 +24,30 @@ function setup() {
         for (let room of rooms)
             roomButts.push(createButton(`${room.name} (${room.numberOfBois})`).mouseClicked(() => {
                 console.log(`joining room ${room.id} ${room.name}`);
-                socket.emit('joinreq', room.id);
+                socket.emit('joinreq', { roomid: room.id, name: namebox.value() });
             }));
     });
 
     
-    socket.on('joinres', roomid => {
+    socket.on('joinres', roomid => {  // roomid = number
         console.log('joinres', roomid);
         playing = true;
         
         for (let butt of roomButts)
             butt.remove();  // .remove() removes the button only from th DOM, not from the roomButts (?)
         
+        namebox.remove();
+        
         let playerPs = [];
 
-        socket.on('room-status', status => {
+        socket.on('room-status', status => {  // status = Room.players { id: Player { id, name }, ... }
             console.log('room-status', status);
 
             for (let p of playerPs)
                 p.remove();  // .remove() removes the p only from th DOM, not from the playerPs (?)
 
             for (let p in status)
-                playerPs.push(createP(p + ' ' + status[p].name));
+                playerPs.push(createP(`${status[p].name} (${status[p].id})`));
         });
     });
 
